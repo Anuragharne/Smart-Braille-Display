@@ -4,18 +4,18 @@
 #include <esp_task_wdt.h>
 
 
-// WiFi credentials
+// WiFi credentials.
 const char* ssid = "your ssid";
 const char* password = "ssid password";
 
-// Create AsyncWebServer on port 80
+// Create AsyncWebServer on port 80.
 AsyncWebServer server(80);
 
-// Define servo motors
+// Define servo motors.
 Servo servos[6];
 const int servoPins[6] = {12, 13, 14, 15, 2, 4};
 
-// Braille Dictionary
+// Braille Dictionary.
 const int brailleMap[26][6] = {
     {1, 0, 0, 0, 0, 0}, // A
     {1, 1, 0, 0, 0, 0}, // B
@@ -48,7 +48,7 @@ const int brailleMap[26][6] = {
 void setup() {
     Serial.begin(115200);
     
-    // Connect to WiFi
+    // Connect to WiFi.
     WiFi.begin(ssid, password);
     Serial.print("Connecting to WiFi");
     while (WiFi.status() != WL_CONNECTED) {
@@ -62,10 +62,10 @@ void setup() {
     // Attach servos to pins
     for (int i = 0; i < 6; i++) {
         servos[i].attach(servoPins[i],500,2400);
-        servos[i].write(20);  // Set all servos to rest position initially
+        servos[i].write(90);  // Set all servos to rest position initially...here rest position is considered as 90 degree. 
     }
     
-    // Web page to input text
+    // Web page to input text.
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
         String html = "<html><body>"
                       "<h2>Enter Text for Braille</h2>"
@@ -90,11 +90,11 @@ void setup() {
 }
 
 void loop() {
-    // Nothing in loop, everything handled asynchronously
+    // Nothing in loop, everything handled asynchronously.
 }
 
 void processText(String text) {
-    text.toUpperCase(); // Convert all to uppercase for uniformity
+    text.toUpperCase(); // Convert all to uppercase for uniformity.
     
     for (int i = 0; i < text.length(); i++) {
         char letter = text[i];
@@ -110,9 +110,9 @@ void processText(String text) {
         
         esp_task_wdt_reset();
         
-        delay(1000); // Small delay to display the letter
+        delay(1000); // Small delay to display the letter.
         
-        resetServos(); // Reset servos after displaying each letter
+        resetServos(); // Reset servos after displaying each letter.
     }
 }
 
@@ -122,21 +122,21 @@ void displayBraille(const int pattern[6]) {
     for (int i = 0; i < 6; i++) {
         Serial.print(pattern[i]);
         if (pattern[i] == 1) {
-            servos[i].write(0);
-            delay(200);  // Move up
+            servos[i].write(0);// from 90 to 0 degree...from viewers perspective it look like motor has rotated from rest to the angle of 90 degree.
+            delay(200);  // Move up...delay has been added to ensure somooth operation and avoid failures.
         } else {
-            servos[i].write(20);
-            delay(200); // Move down
+            servos[i].write(90);
+            delay(200); // Move down.
         }
     }
     Serial.println();
 }
 
-// Function to reset all servos to rest position (90°)
+// Function to reset all servos to rest position (90°).
 void resetServos() {
-    delay(500);  // Small delay before resetting for better visibility
+    delay(500);  // Small delay before resetting for better visibility.
     Serial.println("Resetting servos to rest position...");
     for (int i = 0; i < 6; i++) {
-        servos[i].write(20);  // Move all servos to rest position
+        servos[i].write(90);  // Move all servos to rest position.
     }
 }
