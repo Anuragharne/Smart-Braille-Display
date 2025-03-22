@@ -5,8 +5,8 @@
 
 
 // WiFi credentials
-const char* ssid = "Astro";
-const char* password = "@nuragH006";
+const char* ssid = "your ssid";
+const char* password = "ssid password";
 
 // Create AsyncWebServer on port 80
 AsyncWebServer server(80);
